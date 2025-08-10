@@ -80,8 +80,23 @@ export interface Language {
 
 export interface Customization {
   primaryColor: string;
+  secondaryColor?: string;
   sectionOrder: string[];
   iconColors: Record<string, string>;
+  template?: string;
+  iconStyle?: string;
+  spacing?: string;
+  fontFamily?: string;
+  borderStyle?: string;
+}
+
+// Section configuration for drag-and-drop
+export interface CVSection {
+  id: string;
+  title: string;
+  icon: string;
+  required: boolean;
+  order: number;
 }
 
 export interface CVData {
@@ -126,11 +141,11 @@ const initialCVData: CVData = {
   languages: [],
   customization: {
     primaryColor: '#F25C1C', // Phoenix orange
+    secondaryColor: '#F47A2E', // Phoenix secondary
     sectionOrder: [
-      'personalInfo',
+      'personal',
       'summary',
-      'workExperience',
-      'internships',
+      'work',
       'education',
       'skills',
       'certifications',
@@ -138,6 +153,11 @@ const initialCVData: CVData = {
       'languages',
     ],
     iconColors: {},
+    template: 'professional-classic',
+    iconStyle: 'professional',
+    spacing: 'standard',
+    fontFamily: 'inter',
+    borderStyle: 'subtle',
   },
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
@@ -169,6 +189,7 @@ type CVAction =
   | { type: 'UPDATE_LANGUAGE'; payload: { id: string; data: Partial<Language> } }
   | { type: 'DELETE_LANGUAGE'; payload: string }
   | { type: 'UPDATE_CUSTOMIZATION'; payload: Partial<Customization> }
+  | { type: 'REORDER_SECTIONS'; payload: string[] }
   | { type: 'LOAD_CV_DATA'; payload: CVData }
   | { type: 'RESET_CV_DATA' };
 
@@ -354,6 +375,16 @@ const cvReducer = (state: CVData, action: CVAction): CVData => {
       return {
         ...state,
         customization: { ...state.customization, ...action.payload },
+        updatedAt: new Date().toISOString(),
+      };
+
+    case 'REORDER_SECTIONS':
+      return {
+        ...state,
+        customization: { 
+          ...state.customization, 
+          sectionOrder: action.payload 
+        },
         updatedAt: new Date().toISOString(),
       };
 
