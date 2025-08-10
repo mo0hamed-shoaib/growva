@@ -4,8 +4,11 @@ import ProgressBar from '../components/ProgressBar';
 import PersonalInfoForm from '../components/forms/PersonalInfoForm';
 import SummaryForm from '../components/forms/SummaryForm';
 import CVPreview from '../components/CVPreview';
+import SectionOrdering from '../components/SectionOrdering';
+import TemplateSelection from '../components/TemplateSelection';
+import CustomizationPanel from '../components/CustomizationPanel';
 
-type FormSection = 'personal' | 'summary' | 'work' | 'education' | 'skills' | 'certifications' | 'projects' | 'languages';
+type FormSection = 'personal' | 'summary' | 'work' | 'education' | 'skills' | 'certifications' | 'projects' | 'languages' | 'customization';
 
 const CVBuilder: React.FC = () => {
   const { cvData } = useCV();
@@ -21,6 +24,7 @@ const CVBuilder: React.FC = () => {
     { id: 'certifications', title: 'Certifications', icon: '🏆', required: false },
     { id: 'projects', title: 'Projects', icon: '🚀', required: false },
     { id: 'languages', title: 'Languages', icon: '🌍', required: false },
+    { id: 'customization', title: 'Customize', icon: '🎨', required: false },
   ];
 
   const getSectionStatus = (sectionId: FormSection) => {
@@ -41,6 +45,8 @@ const CVBuilder: React.FC = () => {
         return cvData.projects.length > 0;
       case 'languages':
         return cvData.languages.length > 0;
+      case 'customization':
+        return true; // Always considered complete as it's optional
       default:
         return false;
     }
@@ -112,6 +118,14 @@ const CVBuilder: React.FC = () => {
             Coming soon! This section will allow you to add your language skills.
           </p>
         </div>;
+      case 'customization':
+        return (
+          <div className="space-y-6">
+            <TemplateSelection />
+            <SectionOrdering />
+            <CustomizationPanel />
+          </div>
+        );
       default:
         return <PersonalInfoForm />;
     }
