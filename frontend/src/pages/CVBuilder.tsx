@@ -3,6 +3,12 @@ import { useCV } from '../contexts/CVContext';
 import ProgressBar from '../components/ProgressBar';
 import PersonalInfoForm from '../components/forms/PersonalInfoForm';
 import SummaryForm from '../components/forms/SummaryForm';
+import WorkExperienceForm from '../components/forms/WorkExperienceForm';
+import EducationForm from '../components/forms/EducationForm';
+import SkillsForm from '../components/forms/SkillsForm';
+import ProjectsForm from '../components/forms/ProjectsForm';
+import CertificationsForm from '../components/forms/CertificationsForm';
+import LanguagesForm from '../components/forms/LanguagesForm';
 import CVPreview from '../components/CVPreview';
 import SectionOrdering from '../components/SectionOrdering';
 import TemplateSelection from '../components/TemplateSelection';
@@ -59,65 +65,17 @@ const CVBuilder: React.FC = () => {
       case 'summary':
         return <SummaryForm />;
       case 'work':
-        return <div className="text-center py-12">
-          <div className="text-6xl mb-4">💼</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Work Experience
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon! This section will allow you to add your work history.
-          </p>
-        </div>;
+        return <WorkExperienceForm />;
       case 'education':
-        return <div className="text-center py-12">
-          <div className="text-6xl mb-4">🎓</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Education
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon! This section will allow you to add your educational background.
-          </p>
-        </div>;
+        return <EducationForm />;
       case 'skills':
-        return <div className="text-center py-12">
-          <div className="text-6xl mb-4">⚡</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Skills
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon! This section will allow you to add your skills and expertise.
-          </p>
-        </div>;
+        return <SkillsForm />;
       case 'certifications':
-        return <div className="text-center py-12">
-          <div className="text-6xl mb-4">🏆</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Certifications
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon! This section will allow you to add your certifications.
-          </p>
-        </div>;
+        return <CertificationsForm />;
       case 'projects':
-        return <div className="text-center py-12">
-          <div className="text-6xl mb-4">🚀</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Projects
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon! This section will allow you to showcase your projects.
-          </p>
-        </div>;
+        return <ProjectsForm />;
       case 'languages':
-        return <div className="text-center py-12">
-          <div className="text-6xl mb-4">🌍</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Languages
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon! This section will allow you to add your language skills.
-          </p>
-        </div>;
+        return <LanguagesForm />;
       case 'customization':
         return (
           <div className="space-y-6">

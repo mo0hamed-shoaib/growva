@@ -22,50 +22,55 @@ export interface PersonalInfo {
 }
 
 export interface WorkExperience {
-  id: string;
   jobTitle: string;
   company: string;
   location?: string;
   startDate: string; // MM/YYYY format
   endDate?: string; // MM/YYYY format or "Present"
+  isCurrent?: boolean;
   description?: string;
   achievements?: string[];
 }
 
 export interface Education {
-  id: string;
   degree: string;
   institution: string;
   location?: string;
   startDate: string;
   endDate?: string;
+  isCurrent?: boolean;
   description?: string;
+  gpa?: string;
+  relevantCourses?: string[];
 }
 
 export interface SkillGroup {
-  id: string;
-  name: string;
+  groupName?: string;
   skills: string[];
-  displayLayout: 'bullet' | 'oneLine' | 'columns' | 'badge';
-  proficiency?: 'beginner' | 'intermediate' | 'expert';
+  displayLayout: 'bullet' | 'one-line' | 'columns-2' | 'columns-3' | 'badges';
+  proficiency?: Array<{
+    skill: string;
+    level: 'Beginner' | 'Intermediate' | 'Expert';
+    percentage?: number;
+  }>;
 }
 
 export interface Certification {
-  id: string;
   title: string;
   issuer: string;
   startDate: string;
   endDate?: string;
+  isCurrent?: boolean;
   description?: string;
   certificateLink?: string;
 }
 
 export interface Project {
-  id: string;
   name: string;
   role?: string;
   startDate?: string;
   endDate?: string;
+  isCurrent?: boolean;
   techStack: string[];
   liveDemoLink?: string;
   githubLink?: string;
@@ -73,9 +78,8 @@ export interface Project {
 }
 
 export interface Language {
-  id: string;
-  name: string;
-  proficiency: 'native' | 'fluent' | 'intermediate';
+  language: string;
+  proficiency: 'Native' | 'Fluent' | 'Intermediate' | 'Basic';
 }
 
 export interface Customization {
@@ -167,27 +171,12 @@ const initialCVData: CVData = {
 type CVAction =
   | { type: 'UPDATE_PERSONAL_INFO'; payload: Partial<PersonalInfo> }
   | { type: 'UPDATE_SUMMARY'; payload: string }
-  | { type: 'ADD_WORK_EXPERIENCE'; payload: WorkExperience }
-  | { type: 'UPDATE_WORK_EXPERIENCE'; payload: { id: string; data: Partial<WorkExperience> } }
-  | { type: 'DELETE_WORK_EXPERIENCE'; payload: string }
-  | { type: 'ADD_INTERNSHIP'; payload: WorkExperience }
-  | { type: 'UPDATE_INTERNSHIP'; payload: { id: string; data: Partial<WorkExperience> } }
-  | { type: 'DELETE_INTERNSHIP'; payload: string }
-  | { type: 'ADD_EDUCATION'; payload: Education }
-  | { type: 'UPDATE_EDUCATION'; payload: { id: string; data: Partial<Education> } }
-  | { type: 'DELETE_EDUCATION'; payload: string }
-  | { type: 'ADD_SKILL_GROUP'; payload: SkillGroup }
-  | { type: 'UPDATE_SKILL_GROUP'; payload: { id: string; data: Partial<SkillGroup> } }
-  | { type: 'DELETE_SKILL_GROUP'; payload: string }
-  | { type: 'ADD_CERTIFICATION'; payload: Certification }
-  | { type: 'UPDATE_CERTIFICATION'; payload: { id: string; data: Partial<Certification> } }
-  | { type: 'DELETE_CERTIFICATION'; payload: string }
-  | { type: 'ADD_PROJECT'; payload: Project }
-  | { type: 'UPDATE_PROJECT'; payload: { id: string; data: Partial<Project> } }
-  | { type: 'DELETE_PROJECT'; payload: string }
-  | { type: 'ADD_LANGUAGE'; payload: Language }
-  | { type: 'UPDATE_LANGUAGE'; payload: { id: string; data: Partial<Language> } }
-  | { type: 'DELETE_LANGUAGE'; payload: string }
+  | { type: 'UPDATE_WORK_EXPERIENCE'; payload: WorkExperience[] }
+  | { type: 'UPDATE_EDUCATION'; payload: Education[] }
+  | { type: 'UPDATE_SKILLS'; payload: SkillGroup[] }
+  | { type: 'UPDATE_CERTIFICATIONS'; payload: Certification[] }
+  | { type: 'UPDATE_PROJECTS'; payload: Project[] }
+  | { type: 'UPDATE_LANGUAGES'; payload: Language[] }
   | { type: 'UPDATE_CUSTOMIZATION'; payload: Partial<Customization> }
   | { type: 'REORDER_SECTIONS'; payload: string[] }
   | { type: 'LOAD_CV_DATA'; payload: CVData }
@@ -210,164 +199,45 @@ const cvReducer = (state: CVData, action: CVAction): CVData => {
         updatedAt: new Date().toISOString(),
       };
 
-    case 'ADD_WORK_EXPERIENCE':
-      return {
-        ...state,
-        workExperience: [...state.workExperience, action.payload],
-        updatedAt: new Date().toISOString(),
-      };
-
     case 'UPDATE_WORK_EXPERIENCE':
       return {
         ...state,
-        workExperience: state.workExperience.map(exp =>
-          exp.id === action.payload.id ? { ...exp, ...action.payload.data } : exp
-        ),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'DELETE_WORK_EXPERIENCE':
-      return {
-        ...state,
-        workExperience: state.workExperience.filter(exp => exp.id !== action.payload),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'ADD_INTERNSHIP':
-      return {
-        ...state,
-        internships: [...state.internships, action.payload],
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'UPDATE_INTERNSHIP':
-      return {
-        ...state,
-        internships: state.internships.map(internship =>
-          internship.id === action.payload.id ? { ...internship, ...action.payload.data } : internship
-        ),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'DELETE_INTERNSHIP':
-      return {
-        ...state,
-        internships: state.internships.filter(internship => internship.id !== action.payload),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'ADD_EDUCATION':
-      return {
-        ...state,
-        education: [...state.education, action.payload],
+        workExperience: action.payload,
         updatedAt: new Date().toISOString(),
       };
 
     case 'UPDATE_EDUCATION':
       return {
         ...state,
-        education: state.education.map(edu =>
-          edu.id === action.payload.id ? { ...edu, ...action.payload.data } : edu
-        ),
+        education: action.payload,
         updatedAt: new Date().toISOString(),
       };
 
-    case 'DELETE_EDUCATION':
+    case 'UPDATE_SKILLS':
       return {
         ...state,
-        education: state.education.filter(edu => edu.id !== action.payload),
+        skills: action.payload,
         updatedAt: new Date().toISOString(),
       };
 
-    case 'ADD_SKILL_GROUP':
+    case 'UPDATE_CERTIFICATIONS':
       return {
         ...state,
-        skills: [...state.skills, action.payload],
+        certifications: action.payload,
         updatedAt: new Date().toISOString(),
       };
 
-    case 'UPDATE_SKILL_GROUP':
+    case 'UPDATE_PROJECTS':
       return {
         ...state,
-        skills: state.skills.map(skill =>
-          skill.id === action.payload.id ? { ...skill, ...action.payload.data } : skill
-        ),
+        projects: action.payload,
         updatedAt: new Date().toISOString(),
       };
 
-    case 'DELETE_SKILL_GROUP':
+    case 'UPDATE_LANGUAGES':
       return {
         ...state,
-        skills: state.skills.filter(skill => skill.id !== action.payload),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'ADD_CERTIFICATION':
-      return {
-        ...state,
-        certifications: [...state.certifications, action.payload],
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'UPDATE_CERTIFICATION':
-      return {
-        ...state,
-        certifications: state.certifications.map(cert =>
-          cert.id === action.payload.id ? { ...cert, ...action.payload.data } : cert
-        ),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'DELETE_CERTIFICATION':
-      return {
-        ...state,
-        certifications: state.certifications.filter(cert => cert.id !== action.payload),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'ADD_PROJECT':
-      return {
-        ...state,
-        projects: [...state.projects, action.payload],
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'UPDATE_PROJECT':
-      return {
-        ...state,
-        projects: state.projects.map(project =>
-          project.id === action.payload.id ? { ...project, ...action.payload.data } : project
-        ),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'DELETE_PROJECT':
-      return {
-        ...state,
-        projects: state.projects.filter(project => project.id !== action.payload),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'ADD_LANGUAGE':
-      return {
-        ...state,
-        languages: [...state.languages, action.payload],
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'UPDATE_LANGUAGE':
-      return {
-        ...state,
-        languages: state.languages.map(lang =>
-          lang.id === action.payload.id ? { ...lang, ...action.payload.data } : lang
-        ),
-        updatedAt: new Date().toISOString(),
-      };
-
-    case 'DELETE_LANGUAGE':
-      return {
-        ...state,
-        languages: state.languages.filter(lang => lang.id !== action.payload),
+        languages: action.payload,
         updatedAt: new Date().toISOString(),
       };
 
@@ -408,6 +278,7 @@ const cvReducer = (state: CVData, action: CVAction): CVData => {
 interface CVContextType {
   cvData: CVData;
   dispatch: React.Dispatch<CVAction>;
+  updateCV: (updates: Partial<CVData>) => void;
   saveToLocalStorage: () => void;
   loadFromLocalStorage: () => void;
   resetCV: () => void;
@@ -447,6 +318,41 @@ export const CVProvider: React.FC<CVProviderProps> = ({ children }) => {
     }
   }, []);
 
+  // Update CV data
+  const updateCV = useCallback((updates: Partial<CVData>) => {
+    Object.entries(updates).forEach(([key, value]) => {
+      switch (key) {
+        case 'personalInfo':
+          dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: value as Partial<PersonalInfo> });
+          break;
+        case 'summary':
+          dispatch({ type: 'UPDATE_SUMMARY', payload: value as string });
+          break;
+        case 'workExperience':
+          dispatch({ type: 'UPDATE_WORK_EXPERIENCE', payload: value as WorkExperience[] });
+          break;
+        case 'education':
+          dispatch({ type: 'UPDATE_EDUCATION', payload: value as Education[] });
+          break;
+        case 'skills':
+          dispatch({ type: 'UPDATE_SKILLS', payload: value as SkillGroup[] });
+          break;
+        case 'certifications':
+          dispatch({ type: 'UPDATE_CERTIFICATIONS', payload: value as Certification[] });
+          break;
+        case 'projects':
+          dispatch({ type: 'UPDATE_PROJECTS', payload: value as Project[] });
+          break;
+        case 'languages':
+          dispatch({ type: 'UPDATE_LANGUAGES', payload: value as Language[] });
+          break;
+        case 'customization':
+          dispatch({ type: 'UPDATE_CUSTOMIZATION', payload: value as Partial<Customization> });
+          break;
+      }
+    });
+  }, []);
+
   // Reset CV
   const resetCV = useCallback(() => {
     dispatch({ type: 'RESET_CV_DATA' });
@@ -484,6 +390,7 @@ export const CVProvider: React.FC<CVProviderProps> = ({ children }) => {
   const value: CVContextType = {
     cvData,
     dispatch,
+    updateCV,
     saveToLocalStorage,
     loadFromLocalStorage,
     resetCV,
