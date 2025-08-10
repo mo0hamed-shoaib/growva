@@ -22,15 +22,17 @@ const SummaryForm: React.FC = () => {
 
   const watchedSummary = watch('summary');
 
-  // Update CV data when form changes
+  // Update CV data when form changes (debounced)
   React.useEffect(() => {
-    if (isDirty) {
+    const timeoutId = setTimeout(() => {
       dispatch({
         type: 'UPDATE_SUMMARY',
         payload: watchedSummary,
       });
-    }
-  }, [watchedSummary, dispatch, isDirty]);
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [watchedSummary, dispatch]);
 
   const characterCount = watchedSummary.length;
   const isOverLimit = characterCount > maxLength;

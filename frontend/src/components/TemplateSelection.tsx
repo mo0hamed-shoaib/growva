@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { useCV } from '../contexts/CVContext';
+import { useTemplates } from '../hooks/useTemplates';
+import TemplatePreview from './TemplatePreview';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Template {
   id: string;
@@ -70,20 +75,47 @@ const templates: Template[] = [
 
 const TemplateSelection: React.FC = () => {
   const { cvData, dispatch } = useCV();
+  const { templates, loading, error } = useTemplates();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedTemplate, setSelectedTemplate] = useState<string>(cvData.customization.template || 'professional-classic');
+  const selectedTemplate = cvData.customization?.template || 'classic';
+
+  // Handle loading and error states
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-phoenix-600 mx-auto mb-2"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading templates...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-red-600 dark:text-red-400 mb-2">Error loading templates</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Using default templates</p>
+        </div>
+      </div>
+    );
+  }
 
   const categories = [
     { id: 'all', name: 'All Templates', count: templates.length },
-    { id: 'professional', name: 'Professional', count: templates.filter(t => t.category === 'professional').length },
-    { id: 'minimal', name: 'Minimal', count: templates.filter(t => t.category === 'minimal').length },
-    { id: 'creative', name: 'Creative', count: templates.filter(t => t.category === 'creative').length },
-    { id: 'modern', name: 'Modern', count: templates.filter(t => t.category === 'modern').length },
+    { id: 'professional', name: 'Professional', count: templates.filter(t => t.id.includes('professional') || t.id === 'classic').length },
+    { id: 'minimal', name: 'Minimal', count: templates.filter(t => t.id.includes('minimal')).length },
+    { id: 'creative', name: 'Creative', count: templates.filter(t => t.id.includes('creative')).length },
+    { id: 'modern', name: 'Modern', count: templates.filter(t => t.id.includes('modern')).length },
   ];
 
   const filteredTemplates = selectedCategory === 'all' 
     ? templates 
-    : templates.filter(template => template.category === selectedCategory);
+    : templates.filter(template => {
+        if (selectedCategory === 'professional') return template.id.includes('professional') || template.id === 'classic';
+        return template.id.includes(selectedCategory);
+      });
 
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId);
@@ -145,9 +177,11 @@ const TemplateSelection: React.FC = () => {
             )}
 
             {/* Template Preview */}
-            <div className="text-center mb-4">
-              <div className="text-4xl mb-2">{template.preview}</div>
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+            <div className="flex flex-col items-center mb-4">
+              <div className="mb-3 border rounded bg-white shadow-sm">
+                <TemplatePreview templateId={template.id} />
+              </div>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-center">
                 {template.name}
               </h3>
             </div>

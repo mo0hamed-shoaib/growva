@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useCV } from '../contexts/CVContext';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import ProgressBar from '../components/ProgressBar';
 import PersonalInfoForm from '../components/forms/PersonalInfoForm';
 import SummaryForm from '../components/forms/SummaryForm';
@@ -192,53 +194,48 @@ const CVBuilder: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
               {/* Mode Toggle */}
               <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                <button
+                <Button
+                  variant={mode === 'quick' ? 'default' : 'ghost'}
+                  size="sm"
                   onClick={() => setMode('quick')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    mode === 'quick'
-                      ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                  }`}
+                  className="text-xs sm:text-sm"
                   title="Quick Mode: Guided step-by-step process with essential fields only"
                 >
                   <span className="hidden sm:inline">Quick Mode</span>
                   <span className="sm:hidden">Quick</span>
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant={mode === 'custom' ? 'default' : 'ghost'}
+                  size="sm"
                   onClick={() => setMode('custom')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    mode === 'custom'
-                      ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                  }`}
+                  className="text-xs sm:text-sm"
                   title="Custom Mode: Full control with all sections and advanced options"
                 >
                   <span className="hidden sm:inline">Custom Mode</span>
                   <span className="sm:hidden">Custom</span>
-                </button>
+                </Button>
               </div>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <button
+                <Button
+                  variant={showPreview ? 'default' : 'outline'}
+                  size="sm"
                   onClick={() => setShowPreview(!showPreview)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
-                    showPreview
-                      ? 'bg-phoenix-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
+                  className="text-xs sm:text-sm"
                 >
                   <span className="hidden sm:inline">{showPreview ? 'Hide Preview' : 'Show Preview'}</span>
                   <span className="sm:hidden">{showPreview ? 'Hide' : 'Preview'}</span>
-                </button>
+                </Button>
                 
-                <button
+                <Button
+                  size="sm"
                   onClick={() => setShowExportModal(true)}
-                  className="btn-primary text-sm px-3 sm:px-4 py-2"
+                  className="text-xs sm:text-sm"
                 >
                   <span className="hidden sm:inline">Export CV</span>
                   <span className="sm:hidden">Export</span>
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -339,29 +336,22 @@ const CVBuilder: React.FC = () => {
 
               {/* Navigation Buttons */}
               <div className="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-                <button
+                <Button
+                  variant="outline"
                   onClick={handlePreviousSection}
                   disabled={currentSectionIndex === 0}
-                  className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                    currentSectionIndex === 0
-                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
+                  className="w-full sm:w-auto"
                 >
                   ← Previous
-                </button>
+                </Button>
                 
-                <button
+                <Button
                   onClick={handleNextSection}
                   disabled={currentSectionIndex === sections.length - 1}
-                  className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                    currentSectionIndex === sections.length - 1
-                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                      : 'bg-phoenix-600 text-white hover:bg-phoenix-700'
-                  }`}
+                  className="w-full sm:w-auto"
                 >
                   {currentSectionIndex === sections.length - 1 ? 'Complete' : 'Next →'}
-                </button>
+                </Button>
               </div>
             </div>
 
