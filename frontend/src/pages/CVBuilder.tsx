@@ -13,6 +13,7 @@ import CVPreview from '../components/CVPreview';
 import SectionOrdering from '../components/SectionOrdering';
 import TemplateSelection from '../components/TemplateSelection';
 import CustomizationPanel from '../components/CustomizationPanel';
+import ExportModal from '../components/ExportModal';
 
 type FormSection = 'personal' | 'summary' | 'work' | 'education' | 'skills' | 'certifications' | 'projects' | 'languages' | 'customization';
 type BuilderMode = 'quick' | 'custom';
@@ -22,6 +23,7 @@ const CVBuilder: React.FC = () => {
   const [activeSection, setActiveSection] = useState<FormSection>('personal');
   const [showPreview, setShowPreview] = useState(false);
   const [mode, setMode] = useState<BuilderMode>('quick');
+  const [showExportModal, setShowExportModal] = useState(false);
 
   // Quick mode sections - essential fields only
   const quickModeSections: { id: FormSection; title: string; icon: string; required: boolean }[] = [
@@ -219,7 +221,10 @@ const CVBuilder: React.FC = () => {
                 {showPreview ? 'Hide Preview' : 'Show Preview'}
               </button>
               
-              <button className="btn-primary">
+              <button
+                onClick={() => setShowExportModal(true)}
+                className="btn-primary"
+              >
                 Export CV
               </button>
             </div>
@@ -417,6 +422,11 @@ const CVBuilder: React.FC = () => {
           </div>
         )}
       </div>
+
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+      />
     </div>
   );
 };
